@@ -1,0 +1,26 @@
+MacNTFS — lectura y escritura de discos NTFS en macOS
+=====================================================
+
+1. Arrastra MacNTFS a la carpeta Aplicaciones.
+
+2. Ábrelo. Si macOS dice que no puede verificar al desarrollador:
+   Ajustes del Sistema → Privacidad y seguridad → "Abrir igualmente".
+   (Pasa porque la app es gratuita y no está firmada con una cuenta de Apple de pago.)
+
+3. Sigue los dos pasos de la ventana de bienvenida:
+   · Instala FUSE-T (gratis, sin extensiones de núcleo, sin reiniciar).
+   · Pulsa "Instalar componentes" e introduce tu contraseña una vez.
+
+4. Conecta tu disco de Windows: aparecerá en Finder con lectura y escritura.
+
+Consejos
+· Antes de desconectar el disco, expúlsalo (Finder o el ícono de MacNTFS en la barra de menús).
+· Si el disco viene de un Windows con "Inicio rápido", apaga Windows con Mayúsculas + Apagar.
+· Herramienta de Terminal: macntfs list | mount | unmount | verify | repair | format
+
+Requisitos: macOS 13 Ventura o posterior. Apple Silicon o Intel (usa el DMG que corresponda).
+
+Licencia: GPL-2.0-or-later. Incluye ntfs-3g (GPL), cuyo código fuente está en
+https://github.com/tuxera/ntfs-3g
+
+Desarrollado por Santiago Miguel · chago2850@gmail.com

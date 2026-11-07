@@ -1,0 +1,46 @@
+feature,area,priority,original,clone,notes
+Lectura y escritura completa en volúmenes NTFS desde Finder,motor,must,yes,yes,libntfs-3g sobre FSKit (FSUnaryFileSystem); F01
+Montaje automático al conectar el disco,daemon,must,yes,yes,Detección vía DiskArbitration; probe de FSKit; F01
+Desmontar / expulsar volumen,volúmenes,must,yes,yes,S01 S02 S10; F02
+Montar en solo lectura (opción por volumen),volúmenes,must,yes,yes,F03
+Lista de volúmenes físicos y virtuales con detalle,UI,must,yes,yes,S01 S02
+Detección de volumen sucio y comprobación antes de montar,seguridad,must,yes,yes,S11 F06; ntfsfix limpia journal
+Detección de Windows hibernado / Inicio rápido y montaje R/O recomendado,seguridad,must,yes,yes,S12 F07
+Verificar volumen NTFS,mantenimiento,must,yes,yes,S03 F04; ntfsfix -n
+Reparación básica de volumen NTFS,mantenimiento,must,yes,yes,S03; limitada frente a chkdsk; avisar en UI
+Formatear a NTFS con etiqueta,mantenimiento,must,yes,yes,S04 F05; mkntfs
+Soporte Unicode / nombres no latinos,motor,must,yes,yes,Normalización NFD de macOS vs NTFS
+Archivos > 4 GB y volúmenes grandes,motor,must,yes,yes,
+Atributos extendidos de macOS (xattr / resource fork) en NTFS,motor,must,yes,yes,ntfs-3g streams_interface=xattr
+Deshabilitar operaciones en disco de arranque y medios R/O,UI,must,yes,yes,Reglas del manual
+Activar / desactivar driver (volver al driver R/O de Apple),preferencias,must,yes,yes,S06 F10
+Desinstalador,preferencias,must,yes,yes,S06 F10
+Instalación sin kext ni Seguridad reducida,instalación,must,no,yes,"FUSE-T en espacio de usuario; contraseña una sola vez, sin reinicio"
+Opción Ignorar propietarios,opciones,should,yes,yes,S02 F09
+Opción Guardar último acceso,opciones,should,yes,yes,S02 F09; noatime
+Opción Indexar con Spotlight,opciones,should,yes,yes,S02 F09
+Opción No montar automáticamente,opciones,should,yes,yes,S02 F09
+Ícono y menú en barra de menús,UI,should,yes,yes,S10
+Notificaciones de montaje configurables,UI,should,yes,yes,S08 S13
+Logs detallados para soporte,soporte,should,yes,yes,S06
+Reportar problema con logs adjuntos,soporte,should,yes,yes,S16 → issue en GitHub en lugar de MyParagon
+Herramientas CLI fsck_ntfs y newfs_ntfs,CLI,should,yes,yes,F14; compatibles con diskutil
+Formatear a FAT32 / exFAT / Mac OS Plus,mantenimiento,should,yes,yes,S04; vía newfs_msdos / newfs_exfat / newfs_hfs del sistema
+Buscar actualizaciones (Sparkle o GitHub Releases),actualizaciones,should,yes,yes,S07 F12
+Ruta de respaldo FUSE para macOS < 15.4,compatibilidad,should,no,yes,FUSE-T/macFUSE funcionan en macOS 13+; FSKit nativo queda como mejora futura
+Temas de ventana y menú (claro/oscuro/sistema),UI,should,yes,yes,S09
+Interfaz en español e inglés,UI,should,unknown,partial, — solo español por ahora
+Formatear a ext2/3/4,mantenimiento,could,yes,no,Solo si hay herramientas ext; requiere e2fsprogs
+Selector de disco de arranque Boot Camp,arranque,could,yes,no,S05 F11; solo Mac Intel
+Montar volúmenes BitLocker (con clave),motor,could,unknown,no,dislocker (GPL) — no está en el original documentado
+Integración con Utilidad de Discos,sistema,could,yes,no,Depende de soporte FSKit en Utilidad de Discos; por confirmar
+Respaldo del Mac a disco NTFS,respaldo,could,yes,no,Nota de prensa v17; Time Machine exige APFS: sería copia con rsync
+Montaje de imágenes DMG/VHD con NTFS,volúmenes,could,yes,no,S01 muestra volúmenes virtuales
+Modo línea de comandos para montar/desmontar,CLI,could,unknown,yes,
+Estadísticas de rendimiento / benchmark,UI,could,no,no,Para demostrar velocidad frente a Paragon
+Prueba de 10 días y activación por serial,licencia,skip,yes,no,El clon es libre y sin restricciones por diseño
+Cuenta MyParagon e inicio de sesión,cuenta,skip,yes,no,No aplica
+Extensión de prueba compartiendo en Facebook,licencia,skip,yes,no,No aplica
+Activación offline con LicenseSet.xml,licencia,skip,yes,no,No aplica
+Driver propietario UFSD (kext),motor,skip,yes,no,Propiedad de Paragon; se reemplaza por libntfs-3g + FSKit
+Reparación equivalente a chkdsk de Windows,mantenimiento,skip,yes,no,No existe implementación abierta; se documenta la limitación

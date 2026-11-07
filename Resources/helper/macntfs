@@ -1,0 +1,60 @@
+#!/bin/bash
+# macntfs — herramienta de Terminal de MacNTFS
+#   macntfs list                     lista los volúmenes NTFS
+#   macntfs mount disk4s1 [--ro]     monta en lectura y escritura (o solo lectura)
+#   macntfs unmount disk4s1          desmonta
+#   macntfs verify disk4s1           comprueba el volumen (ntfsfix -n)
+#   macntfs repair disk4s1           repara errores básicos (ntfsfix -d)
+#   macntfs format disk4s1 NOMBRE    formatea el volumen como NTFS (pide contraseña)
+set -u
+HELPER=/usr/local/libexec/macntfs/macntfs-helper
+
+usage() { sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//'; exit 64; }
+need_dev() { [[ "${1:-}" =~ ^(/dev/)?disk[0-9]+s[0-9]+$ ]] || { echo "Indica un volumen, p. ej. disk4s1" >&2; exit 64; }; echo "${1#/dev/}"; }
+vol_name() { diskutil info "$1" 2>/dev/null | awk -F': *' '/Volume Name/{print $2; exit}'; }
+mount_point_of() { mount | awk -v d="/dev/$1" '$1==d{sub(/^.* on /,""); sub(/ \(.*/,""); print; exit}'; }
+
+[ -x "$HELPER" ] || { echo "MacNTFS no está instalado. Abre la app y completa la configuración." >&2; exit 65; }
+
+cmd="${1:-}"; shift || true
+case "$cmd" in
+list)
+    printf "%-12s %-28s %-10s %s\n" DISPOSITIVO NOMBRE TAMAÑO MONTAJE
+    for d in $(diskutil list | awk '/Windows_NTFS|Microsoft Basic Data/{print $NF}'); do
+        kind=$(diskutil info "$d" 2>/dev/null | awk -F': *' '/Type \(Bundle\)/{print $2}')
+        [ "$kind" = "ntfs" ] || continue
+        size=$(diskutil info "$d" | awk -F': *' '/Disk Size/{split($2,a," "); print a[1]" "a[2]; exit}')
+        mp=$(mount_point_of "$d"); [ -z "$mp" ] && mp="(sin montar)"
+        printf "%-12s %-28s %-10s %s\n" "$d" "$(vol_name "$d")" "$size" "$mp"
+    done
+    ;;
+mount)
+    dev=$(need_dev "${1:-}") || exit 64
+    name=$(vol_name "$dev"); [ -z "$name" ] && name="$dev"
+    mp="/Volumes/${name//\//:}"
+    flags=()
+    [ "${2:-}" = "--ro" ] && flags+=(ro)
+    sudo "$HELPER" mount "$dev" "$mp" "$name" "$(id -u)" "$(id -g)" "${flags[@]+"${flags[@]}"}" && echo "Montado en $mp"
+    ;;
+unmount|umount)
+    dev=$(need_dev "${1:-}") || exit 64
+    mp=$(mount_point_of "$dev")
+    [ -z "$mp" ] && mp=$(mount | awk -v n="$(vol_name "$dev")" '$0 ~ " on /Volumes/"n" \\("{sub(/^.* on /,""); sub(/ \(.*/,""); print; exit}')
+    [ -n "$mp" ] || { echo "No está montado" >&2; exit 1; }
+    sudo "$HELPER" unmount "$mp" && echo "Desmontado"
+    ;;
+verify|repair)
+    dev=$(need_dev "${1:-}") || exit 64
+    sudo "$HELPER" "$cmd" "$dev"
+    ;;
+format)
+    dev=$(need_dev "${1:-}") || exit 64
+    label="${2:-Sin titulo}"
+    read -r -p "Se borrarán TODOS los datos de $dev. Escribe BORRAR para continuar: " answer
+    [ "$answer" = "BORRAR" ] || { echo "Cancelado"; exit 1; }
+    sudo -k "$HELPER" format "$dev" ntfs "$label"
+    ;;
+*)
+    usage
+    ;;
+esac
