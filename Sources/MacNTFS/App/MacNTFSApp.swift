@@ -1,3 +1,19 @@
+// MacNTFS — lectura y escritura de discos NTFS en macOS
+// Copyright (C) 2026 Santiago Miguel <chago2850@gmail.com>
+// SPDX-License-Identifier: GPL-3.0-or-later
+//
+// Este programa es software libre: puede redistribuirlo y/o modificarlo bajo los
+// términos de la Licencia Pública General GNU publicada por la Free Software
+// Foundation, ya sea la versión 3 de la Licencia o (a su elección) cualquier
+// versión posterior.
+//
+// Este programa se distribuye con la esperanza de que sea útil, pero SIN NINGUNA
+// GARANTÍA; ni siquiera la garantía implícita de COMERCIABILIDAD o IDONEIDAD PARA
+// UN PROPÓSITO PARTICULAR. Consulte la Licencia Pública General GNU para más detalles.
+//
+// Debería haber recibido una copia de la Licencia Pública General GNU junto con
+// este programa (archivo LICENSE). Si no, consulte <https://www.gnu.org/licenses/>.
+
 import SwiftUI
 import AppKit
 
@@ -31,7 +47,9 @@ struct MacNTFSApp: App {
                 Button("Reportar un problema…") { SupportReporter.openIssue() }
                 Button("Abrir carpeta de registros") { Log.revealInFinder() }
                 Divider()
-                Button("Sitio del proyecto") { NSWorkspace.shared.open(AppInfo.repositoryURL) }
+                Button("Sitio del proyecto y código fuente") { NSWorkspace.shared.open(AppInfo.repositoryURL) }
+                Button("Licencia (GPL-3.0)") { LegalDocs.open("LICENSE.txt") }
+                Button("Componentes de terceros") { LegalDocs.open("THIRD_PARTY_NOTICES.md") }
             }
         }
 
@@ -63,10 +81,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
+/// Abre los documentos legales incluidos en Resources con la app predeterminada.
+enum LegalDocs {
+    static func open(_ name: String) {
+        let url = URL(fileURLWithPath: AppInfo.resourcesPath).appendingPathComponent(name)
+        if FileManager.default.fileExists(atPath: url.path) {
+            NSWorkspace.shared.open(url)
+        } else {
+            NSWorkspace.shared.open(URL(string: "https://www.gnu.org/licenses/gpl-3.0.html")!)
+        }
+    }
+}
+
 enum AboutPanel {
     static func show() {
         let credits = NSMutableAttributedString(
-            string: "Lectura y escritura de discos NTFS para macOS.\nLibre, gratuito y de código abierto (GPL-2.0-or-later).\n\nDesarrollado por Santiago Miguel\nchago2850@gmail.com\n\nMotor NTFS: ntfs-3g (Tuxera / comunidad).\nCapa FUSE: FUSE-T o macFUSE.",
+            string: "Lectura y escritura de discos NTFS para macOS.\nCopyright © 2026 Santiago Miguel · chago2850@gmail.com\n\nSoftware libre bajo la Licencia Pública General GNU v3 o posterior (GPL-3.0-or-later). Se distribuye SIN NINGUNA GARANTÍA. Ayuda → Licencia para leerla completa.\n\nMotor NTFS: ntfs-3g (Tuxera / comunidad).\nCapa FUSE: FUSE-T o macFUSE.",
             attributes: [
                 .font: NSFont.systemFont(ofSize: 11),
                 .foregroundColor: NSColor.secondaryLabelColor

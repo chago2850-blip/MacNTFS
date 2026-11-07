@@ -1,4 +1,20 @@
 #!/bin/bash
+# MacNTFS — lectura y escritura de discos NTFS en macOS
+# Copyright (C) 2026 Santiago Miguel <chago2850@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Este programa es software libre: puede redistribuirlo y/o modificarlo bajo los
+# términos de la Licencia Pública General GNU publicada por la Free Software
+# Foundation, ya sea la versión 3 de la Licencia o (a su elección) cualquier
+# versión posterior.
+#
+# Este programa se distribuye con la esperanza de que sea útil, pero SIN NINGUNA
+# GARANTÍA; ni siquiera la garantía implícita de COMERCIABILIDAD o IDONEIDAD PARA
+# UN PROPÓSITO PARTICULAR. Consulte la Licencia Pública General GNU para más detalles.
+#
+# Debería haber recibido una copia de la Licencia Pública General GNU junto con
+# este programa (archivo LICENSE). Si no, consulte <https://www.gnu.org/licenses/>.
+#
 # Compila MacNTFS.app para una arquitectura y empaqueta ntfs-3g dentro.
 # Uso: scripts/build-app.sh <arm64|x86_64> <carpeta ntfs-3g> <ruta .app de salida>
 set -euo pipefail
@@ -48,6 +64,7 @@ chmod 755 "$APP"/Contents/Resources/helper/*
 cp "$NTFS_DIR"/bin/* "$APP/Contents/Resources/ntfs/bin/"
 chmod 755 "$APP"/Contents/Resources/ntfs/bin/*
 cp LICENSE "$APP/Contents/Resources/LICENSE.txt"
+cp THIRD_PARTY_NOTICES.md "$APP/Contents/Resources/THIRD_PARTY_NOTICES.md"
 
 cat > "$APP/Contents/Info.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -67,7 +84,7 @@ cat > "$APP/Contents/Info.plist" <<EOF
     <key>LSApplicationCategoryType</key><string>public.app-category.utilities</string>
     <key>LSMinimumSystemVersion</key><string>13.0</string>
     <key>NSHighResolutionCapable</key><true/>
-    <key>NSHumanReadableCopyright</key><string>© 2026 Santiago Miguel · GPL-2.0-or-later</string>
+    <key>NSHumanReadableCopyright</key><string>© 2026 Santiago Miguel · GPL-3.0-or-later</string>
     <key>MacNTFSRepository</key><string>$REPO</string>
 </dict>
 </plist>

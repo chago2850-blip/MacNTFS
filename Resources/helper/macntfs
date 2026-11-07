@@ -1,4 +1,20 @@
 #!/bin/bash
+# MacNTFS — lectura y escritura de discos NTFS en macOS
+# Copyright (C) 2026 Santiago Miguel <chago2850@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Este programa es software libre: puede redistribuirlo y/o modificarlo bajo los
+# términos de la Licencia Pública General GNU publicada por la Free Software
+# Foundation, ya sea la versión 3 de la Licencia o (a su elección) cualquier
+# versión posterior.
+#
+# Este programa se distribuye con la esperanza de que sea útil, pero SIN NINGUNA
+# GARANTÍA; ni siquiera la garantía implícita de COMERCIABILIDAD o IDONEIDAD PARA
+# UN PROPÓSITO PARTICULAR. Consulte la Licencia Pública General GNU para más detalles.
+#
+# Debería haber recibido una copia de la Licencia Pública General GNU junto con
+# este programa (archivo LICENSE). Si no, consulte <https://www.gnu.org/licenses/>.
+#
 # macntfs — herramienta de Terminal de MacNTFS
 #   macntfs list                     lista los volúmenes NTFS
 #   macntfs mount disk4s1 [--ro]     monta en lectura y escritura (o solo lectura)
@@ -9,7 +25,7 @@
 set -u
 HELPER=/usr/local/libexec/macntfs/macntfs-helper
 
-usage() { sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//'; exit 64; }
+usage() { grep '^#   macntfs' "$0" | sed 's/^#   //'; exit 64; }
 need_dev() { [[ "${1:-}" =~ ^(/dev/)?disk[0-9]+s[0-9]+$ ]] || { echo "Indica un volumen, p. ej. disk4s1" >&2; exit 64; }; echo "${1#/dev/}"; }
 vol_name() { diskutil info "$1" 2>/dev/null | awk -F': *' '/Volume Name/{print $2; exit}'; }
 mount_point_of() { mount | awk -v d="/dev/$1" '$1==d{sub(/^.* on /,""); sub(/ \(.*/,""); print; exit}'; }

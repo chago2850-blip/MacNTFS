@@ -98,6 +98,14 @@ replica/            análisis funcional (recon) y matriz de funciones
 
 ## Licencia
 
-GPL-2.0-or-later. MacNTFS incluye ntfs-3g (© Tuxera Inc. y colaboradores, GPL). FUSE-T y macFUSE son proyectos independientes con sus propias licencias y no se incluyen en el DMG.
+Copyright © 2026 **Santiago Miguel** · chago2850@gmail.com
 
-Desarrollado por **Santiago Miguel** · chago2850@gmail.com
+MacNTFS es **software libre** bajo la **[Licencia Pública General GNU, versión 3](LICENSE)** o, a tu elección, cualquier versión posterior (`GPL-3.0-or-later`).
+
+- **Libertades:** cualquiera puede usar, estudiar, modificar y redistribuir la app, también con fines comerciales.
+- **Copyleft:** quien la distribuya o la modifique debe mantenerla bajo la GPL-3, publicar el código fuente y conservar los avisos de copyright.
+- **Sin garantía:** se ofrece "tal cual" (secciones 15 y 16 de la licencia).
+
+Cada archivo lleva el aviso de copyright y `SPDX-License-Identifier: GPL-3.0-or-later`. La licencia está en la app (*Ayuda → Licencia*) y dentro del paquete (`LICENSE.txt`).
+
+**ntfs-3g** (© Tuxera Inc. y colaboradores) se distribuye bajo GPL-2.0-or-later, compatible con GPL-3. Su código fuente exacto se publica junto a cada versión (`ntfs-3g-…-codigo-fuente.tar.gz`). FUSE-T y macFUSE no se incluyen en el DMG. Más detalles en [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

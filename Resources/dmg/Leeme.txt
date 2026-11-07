@@ -22,7 +22,8 @@ Consejos
 
 Requisitos: macOS 13 Ventura o posterior. Apple Silicon o Intel (usa el DMG que corresponda).
 
-Licencia: GPL-2.0-or-later. Incluye ntfs-3g (GPL), cuyo código fuente está en
+Licencia: GPL-3.0-or-later (archivo LICENSE.txt dentro de la app). Sin ninguna garantía.
+Incluye ntfs-3g (GPL-2.0-or-later), cuyo código fuente está en
 https://github.com/tuxera/ntfs-3g
 
 Desarrollado por Santiago Miguel · chago2850@gmail.com
