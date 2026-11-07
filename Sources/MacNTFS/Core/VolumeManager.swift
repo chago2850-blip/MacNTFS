@@ -10,6 +10,7 @@ final class VolumeManager: ObservableObject {
     @Published var issues: [String: MountIssue] = [:]
     @Published private(set) var fuse = FuseRuntime.detect()
     @Published private(set) var componentsVersion: String? = Privileged.installedVersion()
+    @Published private(set) var hasFullDiskAccess = FullDiskAccess.isGranted
     @Published var toast: String?
 
     private let monitor = DiskMonitor()
@@ -32,7 +33,7 @@ final class VolumeManager: ObservableObject {
 
     var componentsInstalled: Bool { componentsVersion != nil }
     var componentsOutdated: Bool { componentsVersion != nil && componentsVersion != AppInfo.version && AppInfo.version != "dev" }
-    var isReady: Bool { fuse.isReady && componentsInstalled }
+    var isReady: Bool { fuse.isReady && componentsInstalled && hasFullDiskAccess }
     var ntfsVolumes: [Volume] { volumes.filter(\.isNTFS) }
     var otherVolumes: [Volume] { volumes.filter { !$0.isNTFS } }
     var hasReadWriteMounts: Bool { volumes.contains { $0.isNTFS && $0.state == .readWrite } }
@@ -45,6 +46,7 @@ final class VolumeManager: ObservableObject {
     func refreshEnvironment() {
         fuse = FuseRuntime.detect()
         componentsVersion = Privileged.installedVersion()
+        hasFullDiskAccess = FullDiskAccess.isGranted
     }
 
     func refreshAll() {
@@ -180,6 +182,7 @@ final class VolumeManager: ObservableObject {
         }
 
         let issue = MountIssue(code: result.status, output: result.combined)
+        if issue == .fullDiskAccess { refreshEnvironment() }
         Log.error("Fallo al montar \(v.bsdName): \(result.status) \(result.combined)")
 
         switch issue {
@@ -305,6 +308,7 @@ final class VolumeManager: ObservableObject {
         }
         let result = await Privileged.helper([repair ? "repair" : "verify", v.bsdName])
         Log.info("\(repair ? "Reparación" : "Verificación") de \(v.bsdName): código \(result.status)")
+        if FullDiskAccess.isPermissionError(result.combined) { refreshEnvironment() }
         if repair && result.ok { issues[v.id] = nil }
         refresh()
         return result
@@ -321,7 +325,8 @@ final class VolumeManager: ObservableObject {
         }
         let target = wholeDisk ? "el disco \(v.wholeDisk)" : "el volumen \(v.name)"
         let result = await Privileged.admin(args, prompt: "MacNTFS va a borrar \(target). Se perderán todos sus datos.")
-        Log.info("Formateo \(args.dropFirst().joined(separator: " ")): código \(result.status)")
+        Log.info("Formateo \(args.dropFirst().joined(separator: " ")): código \(result.status) \(result.combined)")
+        if FullDiskAccess.isPermissionError(result.combined) { refreshEnvironment() }
         handled.remove(v.id)
         ourMounts.removeValue(forKey: v.id)
         monitor.reloadAll()

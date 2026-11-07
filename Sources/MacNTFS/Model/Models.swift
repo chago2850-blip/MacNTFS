@@ -124,10 +124,15 @@ enum MountIssue: Equatable {
     case busy
     case notInstalled
     case cancelled
+    case fullDiskAccess
     case other(code: Int32, message: String)
 
     init(code: Int32, output: String) {
         let lower = output.lowercased()
+        if FullDiskAccess.isPermissionError(output) {
+            self = .fullDiskAccess
+            return
+        }
         switch code {
         case 11: self = .syntax
         case 12: self = .notNTFS
@@ -170,6 +175,7 @@ enum MountIssue: Equatable {
         case .busy: return "El volumen está en uso"
         case .notInstalled: return "Faltan componentes de MacNTFS"
         case .cancelled: return "Operación cancelada"
+        case .fullDiskAccess: return "MacNTFS necesita Acceso total al disco"
         case .other: return "No se pudo completar la operación"
         }
     }
@@ -192,6 +198,8 @@ enum MountIssue: Equatable {
             return "Abre la ventana principal de MacNTFS y completa la configuración inicial."
         case .noPrivilege:
             return "Reinstala los componentes de MacNTFS desde Preferencias → General."
+        case .fullDiskAccess:
+            return "macOS bloqueó el acceso directo al disco. Activa MacNTFS en Ajustes del Sistema → Privacidad y seguridad → Acceso total al disco, cierra MacNTFS y vuelve a abrirlo."
         case .other(let code, let message):
             return message.isEmpty ? "Código de error \(code)." : "\(message) (código \(code))"
         default:

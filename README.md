@@ -68,7 +68,7 @@ Variables opcionales:
 
 1. Abre el DMG de tu arquitectura y arrastra **MacNTFS** a **Aplicaciones**.
 2. Ábrela. Si la descargaste de internet y macOS no puede verificarla: *Ajustes del Sistema → Privacidad y seguridad → Abrir igualmente*.
-3. Sigue la ventana de bienvenida: FUSE-T → **Instalar componentes**.
+3. Sigue la ventana de bienvenida: FUSE-T → **Instalar componentes** → **Acceso total al disco** (Ajustes del Sistema → Privacidad y seguridad). Sin este permiso macOS no deja escribir directamente en el disco.
 
 Los componentes se instalan en `/usr/local/libexec/macntfs`, `/usr/local/bin/macntfs` y `/etc/sudoers.d/macntfs`. Esta última regla permite montar, desmontar, verificar y reparar sin pedir la contraseña cada vez. **Formatear siempre la pide.**
 

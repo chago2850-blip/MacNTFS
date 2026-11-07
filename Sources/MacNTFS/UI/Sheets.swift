@@ -34,6 +34,7 @@ struct VerifySheet: View {
             .background(Color.primary.opacity(0.05), in: RoundedRectangle(cornerRadius: 10))
 
             statusLine
+            if FullDiskAccess.isPermissionError(log) { FullDiskAccessHint() }
 
             Text("La reparación de MacNTFS (ntfsfix) corrige errores básicos y limpia el registro de NTFS. Para daños graves usa chkdsk /f en Windows.")
                 .font(.caption).foregroundStyle(.secondary)
@@ -138,6 +139,9 @@ struct EraseSheet: View {
                     .foregroundStyle(success ? .green : .red)
                     .font(.callout)
                     .textSelection(.enabled)
+                if !success && FullDiskAccess.isPermissionError(resultText) {
+                    FullDiskAccessHint()
+                }
             }
 
             HStack {
@@ -180,5 +184,21 @@ struct EraseSheet: View {
         } else {
             resultText = result.combined.isEmpty ? "Error \(result.status)" : result.combined
         }
+    }
+}
+
+/// Explica el bloqueo de privacidad de macOS y abre el ajuste correcto.
+struct FullDiskAccessHint: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("macOS bloqueó el acceso directo al disco. Activa MacNTFS en Privacidad y seguridad → Acceso total al disco, cierra MacNTFS, ábrelo de nuevo y repite la operación.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Button("Abrir Acceso total al disco") { FullDiskAccess.openSettings() }
+                .buttonStyle(BrandButtonStyle())
+        }
+        .padding(12)
+        .background(Color.orange.opacity(0.1), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 }

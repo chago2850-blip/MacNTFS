@@ -7,9 +7,11 @@ MacNTFS — lectura y escritura de discos NTFS en macOS
    Ajustes del Sistema → Privacidad y seguridad → "Abrir igualmente".
    (Pasa porque la app es gratuita y no está firmada con una cuenta de Apple de pago.)
 
-3. Sigue los dos pasos de la ventana de bienvenida:
+3. Sigue los tres pasos de la ventana de bienvenida:
    · Instala FUSE-T (gratis, sin extensiones de núcleo, sin reiniciar).
    · Pulsa "Instalar componentes" e introduce tu contraseña una vez.
+   · Activa MacNTFS en Ajustes del Sistema → Privacidad y seguridad →
+     Acceso total al disco, y vuelve a abrir MacNTFS.
 
 4. Conecta tu disco de Windows: aparecerá en Finder con lectura y escritura.
 

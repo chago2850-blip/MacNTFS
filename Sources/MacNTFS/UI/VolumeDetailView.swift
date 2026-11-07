@@ -176,6 +176,9 @@ struct IssueBanner: View {
                             Task { await manager.mount(volume, forceReadOnly: true) }
                         }
                     }
+                    if issue == .fullDiskAccess {
+                        Button("Abrir Acceso total al disco") { FullDiskAccess.openSettings() }
+                    }
                     Button("Ignorar") { manager.issues[volume.id] = nil }
                 }
                 .controlSize(.small)

@@ -33,6 +33,40 @@ struct FuseRuntime: Equatable {
     static let brewCommand = "brew install macos-fuse-t/homebrew-cask/fuse-t"
 }
 
+// MARK: - Acceso total al disco
+
+/// macOS (TCC) impide abrir /dev/diskN de discos externos —incluso como root— si la app
+/// responsable no tiene "Acceso total al disco". ntfs-3g, mkntfs y ntfsfix lo necesitan.
+enum FullDiskAccess {
+    /// Archivo protegido por TCC: solo se puede abrir con Acceso total al disco.
+    private static let probes = [
+        "/Library/Application Support/com.apple.TCC/TCC.db",
+        NSHomeDirectory() + "/Library/Safari/Bookmarks.plist"
+    ]
+
+    static var isGranted: Bool {
+        for path in probes where FileManager.default.fileExists(atPath: path) {
+            if let handle = FileHandle(forReadingAtPath: path) {
+                try? handle.close()
+                return true
+            }
+            return false
+        }
+        return true // no hay forma de comprobarlo: no bloquear
+    }
+
+    static let settingsURL = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles")!
+
+    static func openSettings() {
+        NSWorkspace.shared.open(settingsURL)
+    }
+
+    static func isPermissionError(_ text: String) -> Bool {
+        let t = text.lowercased()
+        return t.contains("operation not permitted") || t.contains("operación no permitida")
+    }
+}
+
 // MARK: - Registro
 
 enum Log {

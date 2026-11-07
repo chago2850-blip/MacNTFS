@@ -15,7 +15,7 @@ struct SetupView: View {
                     .shadow(color: .brandViolet.opacity(0.35), radius: 18, y: 8)
                 VStack(spacing: 6) {
                     Text("Bienvenido a MacNTFS").font(.largeTitle.weight(.bold))
-                    Text("Dos pasos y tus discos de Windows funcionarán en Finder con lectura y escritura.")
+                    Text("Tres pasos y tus discos de Windows funcionarán en Finder con lectura y escritura.")
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
@@ -65,6 +65,18 @@ struct SetupView: View {
                     }
                     if let message {
                         Text(message).font(.caption).foregroundStyle(.red).textSelection(.enabled)
+                    }
+                }
+
+                step(number: 3,
+                     title: "Permite el Acceso total al disco",
+                     done: manager.hasFullDiskAccess,
+                     detail: "macOS solo deja escribir directamente en un disco externo a las apps con este permiso. Sin él no se puede montar en escritura, reparar ni formatear.") {
+                    if !manager.hasFullDiskAccess {
+                        Button("Abrir Acceso total al disco") { FullDiskAccess.openSettings() }
+                            .buttonStyle(BrandButtonStyle())
+                        Text("Activa MacNTFS en la lista (si no aparece, agrégalo con +). Después cierra MacNTFS y vuelve a abrirlo.")
+                            .font(.caption).foregroundStyle(.secondary)
                     }
                 }
 
